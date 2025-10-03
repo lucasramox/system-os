@@ -1,59 +1,67 @@
-# Frontend
+# Frontend (Angular)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.3.
+Projeto frontend em Angular. Este README contém instruções rápidas para desenvolver e executar o frontend localmente e descreve as integrações/rotas esperadas pelo backend.
 
-## Development server
+Prerequisitos
+- Node.js (recomendo >= 18)
+- npm (ou yarn)
 
-To start a local development server, run:
+Instalação
 
-```bash
+1. Instale dependências:
+
+```powershell
+npm install
+```
+
+2. Rodar em modo de desenvolvimento (watch / live reload):
+
+```powershell
+npm start
+# ou
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abra o navegador em http://localhost:4200/.
 
-## Code scaffolding
+Principais rotas da aplicação (frontend)
+- /login — tela de autenticação
+- /register — cadastro de usuário
+- /list-os — listagem de Ordens de Serviço (é a página após login)
+- /dashboard — área protegida (se usada)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+API esperada (backend)
+- O frontend espera um backend disponível em: http://localhost:3000 (padrão usado nas services). Ajuste se necessário.
+- Endpoint de login: POST /auth/login — retorna { access_token, user }
+- Endpoint de registro: POST /user/register
+- Endpoint de ordens: GET /orders/{userId} — deve retornar um array de objetos com { id, title, createdAt }
 
-```bash
-ng generate component component-name
-```
+Token / autenticação
+- Após login, o token é salvo em localStorage com a chave `auth_token` e o objeto `user` é salvo como string JSON em `user`.
+- Existe um HttpInterceptor (`src/app/interceptors/auth.interceptor.ts`) que adiciona `Authorization: Bearer <token>` nas requisições e trata respostas 401 (limpa sessão e redireciona para /login).
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Onde ajustar a URL da API
+- Se você usa outra URL base, atualize `apiUrl` nos serviços:
+	- `src/app/services/auth.ts` (login/register)
+	- `src/app/services/orders.ts` (getOrders)
 
-```bash
-ng generate --help
-```
+Recursos implementados
+- Angular Material usado para layout e controles (toolbars, icons, buttons, table, spinner).
+- Header com nome do usuário e botão logout (aparece somente quando autenticado).
+- Listagem de Ordens (`/list-os`) implementada com `MatTable`. Cabeçalho aparece sempre; se não houver dados a tabela mostra "Nenhuma ordem encontrada.".
+- Interceptor para anexar token e tratar 401 (logout + redirect).
 
-## Building
+Desenvolvimento e debugging
+- Para ver erros de TypeScript/compilação em tempo real use `ng serve`.
+- A task `npm start` está configurada para rodar a aplicação em modo desenvolvimento (veja package.json se precisar ajustar).
 
-To build the project run:
+Testes
+- Unit tests: `ng test` (se configurado)
+- E2E: `ng e2e` (se configurado)
 
-```bash
-ng build
-```
+Notas rápidas
+- O componente `Header` é standalone e está em `src/app/header`.
+- A listagem MatTable está em `src/app/pages/list-os`.
+- Caso precise persistir tokens de forma diferente (cookies, secure storage), adapte `AuthService` e o interceptor.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Se quiser, eu atualizo este README com instruções específicas de deploy (por exemplo build para `/dist`) ou com variáveis de ambiente para configurar a URL do backend.
