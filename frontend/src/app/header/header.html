@@ -1,0 +1,15 @@
+<mat-toolbar color="primary" class="app-header">
+	<div class="left">
+		<mat-icon class="avatar">account_circle</mat-icon>
+		<span class="username">{{ userDisplay }}</span>
+	</div>
+
+	<div class="spacer"></div>
+
+	<div class="right">
+		<button mat-button (click)="logout()">
+			<mat-icon>logout</mat-icon>
+			Sair
+		</button>
+	</div>
+</mat-toolbar>

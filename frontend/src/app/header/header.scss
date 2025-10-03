@@ -1,0 +1,23 @@
+ .app-header {
+	 display: flex;
+	 align-items: center;
+	 .left {
+		 display: flex;
+		 align-items: center;
+		 .avatar {
+			 margin-right: 8px;
+		 }
+		 .username {
+			 font-weight: 600;
+		 }
+	 }
+ 
+	 .spacer {
+		 flex: 1 1 auto;
+	 }
+ 
+	 .right {
+		 display: flex;
+		 align-items: center;
+	 }
+ }

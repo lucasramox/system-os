@@ -1,0 +1,132 @@
+<div class="create-order-container">
+  <mat-toolbar color="primary" class="toolbar">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="toolbar-title">
+      <mat-icon>add_circle</mat-icon>
+      Nova Ordem de Serviço
+    </span>
+  </mat-toolbar>
+
+
+  <div class="create-order-content">
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-card-title>Cadastrar Ordem de Serviço</mat-card-title>
+        <mat-card-subtitle>Preencha os dados abaixo para criar uma nova OS</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+
+          <div class="form-section">
+            <h3>
+              <mat-icon>description</mat-icon>
+              Descrição
+            </h3>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descrição da ordem de serviço</mat-label>
+              <textarea
+                matInput
+                formControlName="description"
+                rows="5"
+                placeholder="Descreva detalhadamente o serviço a ser realizado..."
+              ></textarea>
+              <mat-error *ngIf="orderForm.get('description')?.invalid && orderForm.get('description')?.touched">
+                {{ getDescriptionErrorMessage() }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-section">
+            <h3>
+              <mat-icon>checklist</mat-icon>
+              Checklist
+            </h3>
+            <div class="checklist-container">
+              <mat-checkbox
+                *ngFor="let item of checklistItems"
+                [formControlName]="item.id"
+                class="checklist-item"
+              >
+                {{ item.label }}
+              </mat-checkbox>
+            </div>
+          </div>
+
+
+          <div class="form-section">
+            <h3>
+              <mat-icon>image</mat-icon>
+              Imagens (Máximo {{ maxImages }})
+            </h3>
+
+            <div class="upload-area">
+              <input
+                type="file"
+                #fileInput
+                (change)="onFileSelected($event)"
+                accept="image/*"
+                multiple
+                hidden
+              >
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="fileInput.click()"
+                [disabled]="selectedImages.length >= maxImages"
+              >
+                <mat-icon>add_photo_alternate</mat-icon>
+                Adicionar Imagens
+              </button>
+              <p class="upload-info">
+                {{ selectedImages.length }} / {{ maxImages }} imagens selecionadas
+              </p>
+            </div>
+
+            <div class="images-preview" *ngIf="selectedImages.length > 0">
+              <div class="image-item" *ngFor="let image of selectedImages; let i = index">
+                <img [src]="image.url" [alt]="'Preview ' + i">
+                <button
+                  mat-icon-button
+                  color="warn"
+                  type="button"
+                  class="remove-image-btn"
+                  (click)="removeImage(i)"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="form-actions">
+            <button
+              mat-button
+              type="button"
+              (click)="goBack()"
+              [disabled]="isLoading"
+            >
+              Cancelar
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="orderForm.invalid || isLoading"
+            >
+              <span *ngIf="!isLoading">
+                <mat-icon>save</mat-icon>
+                Editar
+              </span>
+              <mat-spinner *ngIf="isLoading" diameter="24"></mat-spinner>
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
